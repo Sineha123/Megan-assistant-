@@ -1,0 +1,136 @@
+/* ─── App Layout ─── */
+.app-root {
+  position:        relative;
+  width:           100%;
+  height:          100dvh;
+  display:         flex;
+  flex-direction:  column;
+  overflow:        hidden;
+}
+
+/* Animated background grid */
+.bg-grid {
+  position:         fixed;
+  inset:            0;
+  background-image: linear-gradient(rgba(0,200,255,.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,200,255,.04) 1px, transparent 1px);
+  background-size:  48px 48px;
+  pointer-events:   none;
+  z-index:          0;
+}
+
+.bg-glow {
+  position:       fixed;
+  inset:          0;
+  background:     radial-gradient(ellipse 60% 55% at 50% -10%, rgba(0,200,255,.12) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 85% 110%, rgba(123,92,255,.10) 0%, transparent 60%);
+  pointer-events: none;
+  z-index:        0;
+}
+
+/* ─── Header ─── */
+.app-header {
+  position:        relative;
+  z-index:         10;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         14px 24px;
+  background:      rgba(11, 18, 32, 0.85);
+  align-items: center;
+  padding: 16px 32px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* ─── Logo ─── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-icon {
+  font-size: 1.6rem;
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--accent-glow);
+}
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: "Rajdhani", sans-serif;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.logo-sub {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border-light);
+}
+
+/* ─── Status Bar ─── */
+.status-bar {
+  display: flex;
+  gap: 16px;
+  font-size: 0.8rem;
+}
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+}
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.status-pill.ok .pill-dot { background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+.status-pill.warn .pill-dot { background: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+.pill-label { color: var(--text-muted); }
+.pill-value { font-weight: 600; color: #fff; text-transform: uppercase; font-size: 0.7rem; }
+.status-connecting { color: var(--text-muted); animation: pulse 1.5s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ─── Main Area ─── */
+.app-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* ─── Responsive Media Queries ─── */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  }
+  .app-main {
+    padding: 12px;
+  }
+  .logo-text {
+    font-size: 1.2rem;
+  }
+  .logo-sub {
+    display: none;
+  }
+  .status-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+

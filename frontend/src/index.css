@@ -1,0 +1,32 @@
+/* ─── MEGAN Global Styles ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --clr-bg:          #050a13;
+  --clr-surface:     #0b1220;
+  --clr-panel:       #0f1829;
+  --clr-border:      rgba(0, 200, 255, 0.15);
+  --clr-primary:     #00c8ff;
+  --clr-primary-dim: rgba(0, 200, 255, 0.12);
+  --clr-accent:      #7b5cff;
+  --clr-text:        #e2eaf5;
+  --clr-text-muted:  #6b82a0;
+  --radius:          12px;
+  --font-main:       "Inter",      system-ui, sans-serif;
+  --font-display:    "Rajdhani",   system-ui, sans-serif;
+}
+
+body {
+  font-family:      var(--font-main);
+  background-color: var(--clr-bg);
+  color:            var(--clr-text);
+  min-height:       100dvh;
+  overflow-x:       hidden;
+}
+
+#root { width: 100%; height: 100dvh; display: flex; flex-direction: column; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--clr-primary-dim); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--clr-primary); }

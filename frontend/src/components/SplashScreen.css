@@ -1,0 +1,371 @@
+/* ═══════════════════════════════════════════
+   MEGAN Splash Screen — Premium Dark Theme
+   ═══════════════════════════════════════════ */
+
+/* ─── Root overlay ─────────────────────────────────────────── */
+.splash-root {
+  position:        fixed;
+  inset:           0;
+  z-index:         9999;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  overflow:        hidden;
+  background:      #000;
+  transition:      opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                   transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.splash-exit {
+  opacity:   0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* ─── Background layers ────────────────────────────────────── */
+.splash-bg {
+  position:   absolute;
+  inset:      0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%,
+                #040d1a 0%, #000 70%);
+}
+
+.splash-glow-center {
+  position:    absolute;
+  inset:       0;
+  background:  radial-gradient(ellipse 55% 45% at 50% 48%,
+                  rgba(0, 200, 255, 0.10) 0%,
+                  rgba(0, 90,  180, 0.06) 40%,
+                  transparent 70%);
+  animation:   pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,100% { opacity: 0.8; }
+  50%      { opacity: 1.0; }
+}
+
+/* Scanline texture */
+.splash-scanlines {
+  position:         absolute;
+  inset:            0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 200, 255, 0.012) 2px,
+    rgba(0, 200, 255, 0.012) 4px
+  );
+  pointer-events: none;
+}
+
+/* ─── Orbit rings ───────────────────────────────────────────── */
+.orbit {
+  position:      absolute;
+  border-radius: 50%;
+  border:        1px solid;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.orbit-1 {
+  width:            520px;
+  height:           520px;
+  border-color:     rgba(0, 200, 255, 0.08);
+  animation:        orbit-spin 18s linear infinite;
+}
+
+.orbit-2 {
+  width:            680px;
+  height:           680px;
+  border-color:     rgba(0, 200, 255, 0.05);
+  animation:        orbit-spin 28s linear infinite reverse;
+}
+
+.orbit-3 {
+  width:            860px;
+  height:           860px;
+  border-color:     rgba(123, 92, 255, 0.04);
+  animation:        orbit-spin 40s linear infinite;
+}
+
+/* Each ring has a glowing dot on it */
+.orbit::after {
+  content:       "";
+  position:      absolute;
+  width:         5px;
+  height:        5px;
+  border-radius: 50%;
+  top:           -2.5px;
+  left:          50%;
+  transform:     translateX(-50%);
+  background:    #00c8ff;
+  box-shadow:    0 0 12px 4px rgba(0,200,255,0.6);
+}
+.orbit-2::after { background: #7b5cff; box-shadow: 0 0 12px 4px rgba(123,92,255,0.5); top: auto; bottom: -2.5px; }
+.orbit-3::after { background: #00c864; box-shadow: 0 0 12px 4px rgba(0,200,100,0.4); left: -2.5px; top: 50%; }
+
+@keyframes orbit-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg);   }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ─── Hex particles ─────────────────────────────────────────── */
+.hex-particle {
+  position:   absolute;
+  width:      12px;
+  height:     14px;
+  opacity:    0;
+  clip-path:  polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation:  float-hex 6s ease-in-out infinite;
+}
+
+.hex-p1  { background: rgba(0,200,255,.25); top:15%; left:12%; animation-delay:0s;    animation-duration:7s; }
+.hex-p2  { background: rgba(0,200,255,.18); top:25%; left:82%; animation-delay:0.8s;  animation-duration:9s; }
+.hex-p3  { background: rgba(123,92,255,.2); top:70%; left:8%;  animation-delay:1.2s;  animation-duration:8s; }
+.hex-p4  { background: rgba(0,200,100,.2);  top:80%; left:88%; animation-delay:0.4s;  animation-duration:10s;}
+.hex-p5  { background: rgba(0,200,255,.15); top:45%; left:5%;  animation-delay:2s;    animation-duration:7s; }
+.hex-p6  { background: rgba(0,200,255,.12); top:55%; left:93%; animation-delay:1.5s;  animation-duration:8s; }
+.hex-p7  { background: rgba(123,92,255,.15);top:10%; left:55%; animation-delay:0.2s;  animation-duration:9s; }
+.hex-p8  { background: rgba(0,200,255,.20); top:88%; left:42%; animation-delay:1.8s;  animation-duration:6s; }
+.hex-p9  { background: rgba(0,200,100,.12); top:5%;  left:30%; animation-delay:3s;    animation-duration:11s;}
+.hex-p10 { background: rgba(0,200,255,.10); top:92%; left:20%; animation-delay:2.5s;  animation-duration:8s; }
+
+@keyframes float-hex {
+  0%   { opacity: 0;    transform: translateY(0)     rotate(0deg);   }
+  20%  { opacity: 0.9; }
+  80%  { opacity: 0.6; }
+  100% { opacity: 0;    transform: translateY(-40px) rotate(60deg);  }
+}
+
+/* ─── Centre glass card ─────────────────────────────────────── */
+.splash-card {
+  position:         relative;
+  z-index:          10;
+  display:          flex;
+  flex-direction:   column;
+  align-items:      center;
+  gap:              0;
+  padding:          48px 56px 40px;
+  border-radius:    28px;
+  background:       rgba(8, 16, 30, 0.72);
+  backdrop-filter:  blur(28px) saturate(1.4);
+  border:           1px solid rgba(0, 200, 255, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(0,200,255,0.07) inset,
+    0 0 80px rgba(0,200,255,0.08),
+    0 32px 80px rgba(0,0,0,0.7);
+  min-width:        380px;
+  animation:        card-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: scale(0.88) translateY(20px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* Glass highlight */
+.card-gloss {
+  position:      absolute;
+  top:           0;
+  left:          15%;
+  right:         15%;
+  height:        1px;
+  background:    linear-gradient(90deg,
+    transparent, rgba(255,255,255,0.25), transparent);
+  border-radius: 999px;
+}
+
+/* ─── Logo ring ─────────────────────────────────────────────── */
+.logo-ring {
+  position:       relative;
+  width:          170px;
+  height:         170px;
+  display:        flex;
+  align-items:    center;
+  justify-content: center;
+  margin-bottom:  28px;
+}
+
+.ring-pulse {
+  position:      absolute;
+  inset:         -14px;
+  border-radius: 50%;
+  border:        2px solid rgba(0, 200, 255, 0.35);
+  animation:     ring-beat 2.2s ease-in-out infinite;
+  box-shadow:
+    0 0 24px rgba(0,200,255,0.3),
+    inset 0 0 24px rgba(0,200,255,0.08);
+}
+
+.ring-pulse::before {
+  content:       "";
+  position:      absolute;
+  inset:         -12px;
+  border-radius: 50%;
+  border:        1px solid rgba(0, 200, 255, 0.15);
+  animation:     ring-beat 2.2s ease-in-out infinite 0.4s;
+}
+
+.ring-pulse::after {
+  content:       "";
+  position:      absolute;
+  inset:         -24px;
+  border-radius: 50%;
+  border:        1px solid rgba(0, 200, 255, 0.07);
+  animation:     ring-beat 2.2s ease-in-out infinite 0.8s;
+}
+
+@keyframes ring-beat {
+  0%,100% { transform: scale(1);    opacity: 1;   }
+  50%      { transform: scale(1.06); opacity: 0.6; }
+}
+
+.splash-logo {
+  width:         150px;
+  height:        150px;
+  object-fit:    contain;
+  border-radius: 50%;
+  filter:
+    drop-shadow(0 0 24px rgba(0,200,255,0.55))
+    drop-shadow(0 0 48px rgba(0,200,255,0.25));
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+@keyframes logo-float {
+  0%,100% { transform: translateY(0);   }
+  50%      { transform: translateY(-8px); }
+}
+
+/* ─── MEGAN Letters ─────────────────────────────────────────── */
+.megan-letters {
+  display:         flex;
+  gap:             10px;
+  margin-bottom:   14px;
+}
+
+.letter {
+  font-family:    "Rajdhani", "Inter", sans-serif;
+  font-size:      3.6rem;
+  font-weight:    700;
+  letter-spacing: 8px;
+  color:          transparent;
+  opacity:        0;
+  transform:      translateY(20px) scale(0.8);
+  transition:     none;
+  background:     linear-gradient(180deg, #e2eaf5 20%, rgba(0,200,255,0.7) 100%);
+  -webkit-background-clip: text;
+  background-clip:         text;
+  text-shadow:    none;
+}
+
+.letter-in {
+  opacity:    1;
+  transform:  translateY(0) scale(1);
+  transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter:     drop-shadow(0 0 12px rgba(0,200,255,0.6));
+}
+
+/* Stagger delays */
+.letter-0 { transition-delay: 0.0s, 0.0s; }
+.letter-1 { transition-delay: 0.1s, 0.1s; }
+.letter-2 { transition-delay: 0.2s, 0.2s; }
+.letter-3 { transition-delay: 0.3s, 0.3s; }
+.letter-4 { transition-delay: 0.4s, 0.4s; }
+
+/* ─── Tagline ────────────────────────────────────────────────── */
+.splash-tagline {
+  font-size:      0.8rem;
+  font-weight:    500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color:          rgba(0, 200, 255, 0.55);
+  margin:         0 0 24px;
+  opacity:        0;
+  transform:      translateY(8px);
+  transition:     opacity 0.5s 0.1s, transform 0.5s 0.1s;
+}
+
+.tagline-in {
+  opacity:   1;
+  transform: translateY(0);
+}
+
+/* ─── Divider ────────────────────────────────────────────────── */
+.splash-divider {
+  width:      0;
+  height:     1px;
+  background: linear-gradient(90deg,
+    transparent, rgba(0,200,255,0.5), rgba(123,92,255,0.4), transparent);
+  margin-bottom: 20px;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+.divider-in { width: 100%; }
+
+/* ─── Boot console ───────────────────────────────────────────── */
+.boot-console {
+  width:     100%;
+  min-height: 120px;
+  display:   flex;
+  flex-direction: column;
+  gap:       5px;
+}
+
+.boot-line {
+  display:   flex;
+  gap:       8px;
+  font-size: 0.76rem;
+  font-family: "Courier New", "Consolas", monospace;
+  color:     rgba(0, 200, 255, 0.7);
+  animation: line-appear 0.2s ease-out both;
+}
+
+@keyframes line-appear {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.boot-prompt {
+  color: rgba(0, 200, 255, 0.4);
+  flex-shrink: 0;
+}
+
+.boot-text { color: rgba(180, 220, 255, 0.8); }
+
+/* Last line is always brighter */
+.boot-line:last-child .boot-text { color: #00c8ff; }
+
+.boot-cursor {
+  width:      8px;
+  height:     14px;
+  background: #00c8ff;
+  border-radius: 2px;
+  margin-top: 4px;
+  margin-left: 16px;
+  animation: blink-cursor 0.8s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ─── Version badge ─────────────────────────────────────────── */
+.splash-version {
+  position:       absolute;
+  bottom:         24px;
+  font-size:      0.68rem;
+  letter-spacing: 2px;
+  color:          rgba(0, 200, 255, 0.25);
+  text-transform: uppercase;
+  animation:      fade-in 1s 0.5s both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

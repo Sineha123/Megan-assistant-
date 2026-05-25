@@ -1,0 +1,61 @@
+# MEGAN AI Assistant - Python Requirements
+# Install with: pip install -r requirements.txt
+
+# ─── Core ────────────────────────────────────────────────────────────────────
+python-dotenv==1.0.0
+python-multipart==0.0.9
+
+# ─── FastAPI & Web ────────────────────────────────────────────────────────────
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+websockets==12.0
+
+# ─── AI: Google Gemini ────────────────────────────────────────────────────────
+google-genai>=1.0.0
+# Note: google-generativeai is deprecated — use google-genai instead
+
+# ─── Voice: TTS (Female Neural Voice — Microsoft Edge TTS, FREE) ──────────────
+edge-tts>=6.1.9
+# edge-tts requires internet connection to stream neural audio
+# No API key needed — uses Microsoft Edge's neural voices
+
+# ─── Voice: STT (Speech-to-Text) ──────────────────────────────────────────────
+SpeechRecognition==3.10.3
+# pyaudio for microphone input (optional — only needed for live mic recording):
+# pip install pyaudio
+# If that fails on Windows: pip install pipwin && pipwin install pyaudio
+
+# ─── Browser Automation ───────────────────────────────────────────────────────
+playwright==1.43.0
+# After pip install, run: playwright install chromium
+pyautogui==0.9.54
+pyperclip==1.8.2
+pynput==1.7.6
+
+# ─── Image / Vision ───────────────────────────────────────────────────────────
+Pillow>=10.3.0
+pytesseract==0.3.10
+# pytesseract requires Tesseract OCR binary:
+#   Windows: https://github.com/UB-Mannheim/tesseract/wiki
+#   macOS:   brew install tesseract
+#   Linux:   sudo apt-get install tesseract-ocr
+
+# ─── System Control ───────────────────────────────────────────────────────────
+psutil==5.9.8
+screen-brightness-control==0.22.1
+# Windows volume (optional): pip install pycaw
+
+# ─── Database ─────────────────────────────────────────────────────────────────
+# sqlite3 is built into Python — no pip install needed
+
+# ─── Utilities ────────────────────────────────────────────────────────────────
+requests==2.31.0
+pytz==2024.1
+APScheduler==3.10.4
+
+# ─── Development (optional) ───────────────────────────────────────────────────
+pytest==8.1.1
+pytest-asyncio==0.23.6
+httpx==0.27.0
+black==24.4.2
+flake8==7.0.0
