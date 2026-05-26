@@ -52,10 +52,11 @@ MEGAN is a comprehensive AI assistant system that:
 | **Browser Agent** | Web automation, search, navigation | ✅ Implemented |
 | **File Agent** | File operations, organization | ✅ Implemented |
 | **Memory System** | Learning, preferences, mood tracking | ✅ Implemented |
+| **System Agent** | OS control, brightness, volume | ✅ Implemented  |
 | **Voice Module** | Speech recognition, synthesis | 🔄 In Progress |
-| **Messaging Agent** | WhatsApp, Email | 🔄 In Progress |
+| **Messaging Agent** | Email | 🔄 In Progress |
 | **Vision Module** | Screen analysis, OCR | 🔄 In Progress |
-| **System Agent** | OS control, brightness, volume | 🔄 In Progress |
+
 
 ---
 
