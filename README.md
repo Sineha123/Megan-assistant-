@@ -495,5 +495,6 @@ If you find this project useful, please star it! ⭐
 ![Brightness Control](screenshots/screenshot_brightness.png)
 
 ### Browser Automation
-![Browser Search](screenshots/screenshot_browser.png)
+![Browser Chat Request](screenshots/screenshot_browser_chat.png)
+![Browser YouTube Playback](screenshots/screenshot_browser_youtube.png)
 
