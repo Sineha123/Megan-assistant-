@@ -386,14 +386,6 @@ Contributions welcome! Please:
 4. **Concurrent Tasks:** Multiple agents might cause conflicts
    - **Fix:** Implement proper locking (planned)
 
-See [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) for more solutions.
-
-![Browser Automation UI (MEGAN Chat)](screenshots/browser_chat.png)
-
-![Browser Automation UI (YouTube Playing)](screenshots/youtube_playback.png)
-
-![File Organization UI](screenshots/file_setup.png)
-
 ---
 
 ## 🌟 Future Roadmap
