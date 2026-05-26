@@ -15,12 +15,17 @@ export default function MEGANChat({ userId = "user_001" }) {
   const [input,       setInput]       = useState("");
   const [isLoading,   setIsLoading]   = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isSpeaking,  setIsSpeaking]  = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false); // Toggle for text-based TTS
+  const [showSettings, setShowSettings] = useState(false);
+  const [apiKeyInput,  setApiKeyInput]  = useState("");
   const [wsStatus,    setWsStatus]    = useState("disconnected"); // connected | disconnected | error
 
   const bottomRef   = useRef(null);
   const inputRef    = useRef(null);
   const wsRef       = useRef(null);
   const mediaRef    = useRef(null);
+  const audioRef    = useRef(null); // Reference to playing audio
   const audioChunks = useRef([]);
   const msgIdRef    = useRef(1);
 
@@ -75,8 +80,37 @@ export default function MEGANChat({ userId = "user_001" }) {
     });
   }
 
+  /* ── Audio Playback ───────────────────────────────────────────── */
+  function playAudioResponse(base64Audio) {
+    if (!base64Audio) return;
+    
+    // Stop currently playing audio if any
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    
+    setIsSpeaking(true);
+    const audio = new Audio("data:audio/mp3;base64," + base64Audio);
+    audioRef.current = audio;
+    
+    audio.onended = () => {
+      setIsSpeaking(false);
+      audioRef.current = null;
+    };
+    
+    audio.onerror = () => {
+      console.error("Error playing audio response");
+      setIsSpeaking(false);
+    };
+    
+    audio.play().catch(e => {
+      console.error("Browser blocked autoplay:", e);
+      setIsSpeaking(false);
+    });
+  }
+
   /* ── Send via HTTP POST ─────────────────────────────────────── */
-  async function sendMessage(text) {
+  async function sendMessage(text, forceVoice = false) {
     if (!text.trim()) return;
     const trimmed = text.trim();
 
@@ -91,11 +125,16 @@ export default function MEGANChat({ userId = "user_001" }) {
         body:    JSON.stringify({
           user_id:      userId,
           content:      trimmed,
-          message_type: "text",
+          message_type: forceVoice ? "voice" : "text",
+          require_audio: voiceEnabled || forceVoice, // Always ask for audio if using mic
         }),
       });
       const data = await res.json();
       pushMessage("assistant", data.response ?? data.error ?? "No response");
+      
+      if (data.audio_response) {
+        playAudioResponse(data.audio_response);
+      }
     } catch (err) {
       pushMessage("assistant", `⚠ Network error: ${err.message}`);
     } finally {
@@ -104,60 +143,45 @@ export default function MEGANChat({ userId = "user_001" }) {
     }
   }
 
-  /* ── Voice Recording ─────────────────────────────────────────── */
+  /* ── Voice Recording (Web Speech API) ────────────────────────── */
   async function toggleVoice() {
     if (isListening) {
-      // Stop recording
-      mediaRef.current?.stop();
+      if (mediaRef.current) mediaRef.current.stop();
       setIsListening(false);
       return;
     }
 
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      pushMessage("assistant", "⚠ Tumhara browser speech recognition support nahi karta. Please use Chrome!");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "hi-IN"; // Supports Hinglish/Hindi
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      sendMessage(transcript, true); // Send the recognized text directly to /chat and force voice response!
+    };
+    
+    recognition.onerror = (event) => {
+      pushMessage("assistant", `⚠ Voice error: ${event.error}`);
+      setIsListening(false);
+    };
+    
+    recognition.onend = () => setIsListening(false);
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      audioChunks.current = [];
-
-      recorder.ondataavailable = (e) => audioChunks.current.push(e.data);
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
-        const blob   = new Blob(audioChunks.current, { type: "audio/wav" });
-        const buffer = await blob.arrayBuffer();
-        const b64    = btoa(
-          new Uint8Array(buffer).reduce((acc, b) => acc + String.fromCharCode(b), "")
-        );
-
-        setIsLoading(true);
-        pushMessage("user", "🎤 [Voice message]");
-
-        try {
-          const res  = await fetch("/voice/upload", {
-            method:  "POST",
-            headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ user_id: userId, audio_base64: b64, language: "hi-IN" }),
-          });
-          const data = await res.json();
-          if (data.transcribed_text) {
-            setMessages((prev) => {
-              const updated = [...prev];
-              const last    = updated.findLastIndex((m) => m.role === "user");
-              if (last >= 0) updated[last] = { ...updated[last], content: `🎤 "${data.transcribed_text}"` };
-              return updated;
-            });
-          }
-          pushMessage("assistant", data.response ?? data.error ?? "No response");
-        } catch (err) {
-          pushMessage("assistant", `⚠ Voice error: ${err.message}`);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      recorder.start();
-      mediaRef.current = recorder;
-      setIsListening(true);
+      recognition.start();
+      mediaRef.current = recognition;
     } catch (err) {
-      pushMessage("assistant", `⚠ Microphone error: ${err.message}. Please allow microphone access.`);
+      pushMessage("assistant", `⚠ Microphone start error: ${err.message}`);
+      setIsListening(false);
     }
   }
 
@@ -166,6 +190,28 @@ export default function MEGANChat({ userId = "user_001" }) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage(input);
+    }
+  }
+
+  /* ── Settings API ────────────────────────────────────────────── */
+  async function saveApiKey() {
+    if (!apiKeyInput.trim()) return;
+    try {
+      const res = await fetch("/config/api_key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ api_key: apiKeyInput.trim() }),
+      });
+      const data = await res.json();
+      if (data.status === "success") {
+        pushMessage("assistant", "✅ API Key successfully updated! I am ready to go.");
+        setShowSettings(false);
+        setApiKeyInput("");
+      } else {
+        pushMessage("assistant", `⚠ Error updating API key: ${data.error}`);
+      }
+    } catch (err) {
+      pushMessage("assistant", `⚠ Network error: ${err.message}`);
     }
   }
 
@@ -184,11 +230,35 @@ export default function MEGANChat({ userId = "user_001" }) {
   return (
     <div className="megan-chat" role="main" aria-label="MEGAN Chat Interface">
 
-      {/* Connection badge */}
-      <div className={`ws-badge ws-${wsStatus}`}>
-        <span className="ws-dot" />
-        {wsStatus === "connected" ? "Live" : wsStatus === "error" ? "Error" : "Offline"}
+      {/* Connection badge & Settings */}
+      <div className="header-actions">
+        <button 
+          className="settings-btn" 
+          onClick={() => setShowSettings(!showSettings)}
+          title="Settings / API Key"
+        >
+          ⚙️
+        </button>
+        <div className={`ws-badge ws-${wsStatus}`}>
+          <span className="ws-dot" />
+          {wsStatus === "connected" ? "Live" : wsStatus === "error" ? "Error" : "Offline"}
+        </div>
       </div>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="settings-modal">
+          <h4>System Settings</h4>
+          <label>Update Gemini API Key:</label>
+          <input 
+            type="password" 
+            placeholder="AIzaSy..." 
+            value={apiKeyInput}
+            onChange={(e) => setApiKeyInput(e.target.value)}
+          />
+          <button className="save-btn" onClick={saveApiKey}>Save & Restart Brain</button>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="chat-messages" aria-live="polite" aria-label="Conversation">
@@ -197,6 +267,14 @@ export default function MEGANChat({ userId = "user_001" }) {
         ))}
 
         {isLoading && <TypingIndicator />}
+        {isSpeaking && (
+          <div className="speaking-indicator">
+            <span className="audio-wave"></span>
+            <span className="audio-wave"></span>
+            <span className="audio-wave"></span>
+            <small>MEGAN is speaking...</small>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
@@ -224,12 +302,21 @@ export default function MEGANChat({ userId = "user_001" }) {
         >
           {isListening ? <IconStop /> : <IconMic />}
         </button>
+        
+        <button
+          className={`action-btn toggle-voice-btn ${voiceEnabled ? "active" : ""}`}
+          onClick={() => setVoiceEnabled(!voiceEnabled)}
+          title={voiceEnabled ? "Auto-Speak ON" : "Auto-Speak OFF"}
+          style={{ opacity: voiceEnabled ? 1 : 0.5, border: voiceEnabled ? "1px solid var(--accent-primary)" : "none" }}
+        >
+          <IconSpeaker />
+        </button>
 
         <button
           id="megan-send-btn"
           className="action-btn send-btn"
           onClick={() => sendMessage(input)}
-          disabled={isLoading || !input.trim()}
+          disabled={isLoading || (!input.trim() && !isListening)}
           aria-label="Send message"
           title="Send (Enter)"
         >
@@ -304,5 +391,8 @@ function IconHexagon() {
 }
 function IconUser() {
   return <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>;
+}
+function IconSpeaker() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>;
 }
 

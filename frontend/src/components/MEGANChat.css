@@ -17,9 +17,6 @@
 
 /* ─── WS badge ─── */
 .ws-badge {
-  position:      absolute;
-  top:           14px;
-  right:         16px;
   display:       flex;
   align-items:   center;
   gap:           6px;
@@ -45,6 +42,86 @@
 }
 .ws-connected .ws-dot { animation: blink 1.5s step-end infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* ─── Settings Modal & Header ─── */
+.header-actions {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 30;
+}
+
+.ws-badge {
+  position: relative;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border: 1px solid;
+  transition: all 0.3s;
+}
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+}
+.settings-btn:hover {
+  opacity: 1;
+  transform: rotate(45deg);
+}
+
+.settings-modal {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: var(--glass-bg, rgba(15, 23, 42, 0.9));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  min-width: 280px;
+}
+.settings-modal h4 { margin: 0; color: #fff; }
+.settings-modal label { font-size: 0.85rem; color: #94a3b8; }
+.settings-modal input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+.settings-modal input:focus {
+  outline: none;
+  border-color: #0ea5e9;
+}
+.save-btn {
+  background: #0ea5e9;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.save-btn:hover { background: #0284c7; }
 
 /* ─── Messages ─── */
 .chat-messages {
@@ -295,4 +372,43 @@
   .megan-chat { border-radius: 0; }
   .bubble     { max-width: 85%; }
   .app-main   { padding: 0; }
+}
+
+/* ─── Speaking Indicator ─── */
+.speaking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 20px;
+  width: fit-content;
+  color: #0ea5e9;
+  font-size: 0.8rem;
+  margin-top: -12px;
+  margin-bottom: 12px;
+  margin-left: 50px;
+}
+
+.audio-wave {
+  width: 3px;
+  height: 10px;
+  background-color: #0ea5e9;
+  border-radius: 3px;
+  animation: wave 1s ease-in-out infinite;
+}
+
+.audio-wave:nth-child(2) { animation-delay: 0.2s; }
+.audio-wave:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes wave {
+  0%, 100% { height: 6px; }
+  50% { height: 16px; }
+}
+
+/* ─── Toggle Voice Button ─── */
+.toggle-voice-btn.active {
+  background: rgba(14, 165, 233, 0.2);
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.4);
 }

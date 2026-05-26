@@ -58,6 +58,7 @@ class ChatMessage(BaseModel):
     user_id:      str
     content:      str
     message_type: str = "text"          # text | voice | command
+    require_audio: bool = False
     timestamp:    Optional[str] = None
 
 class VoiceData(BaseModel):
@@ -65,6 +66,14 @@ class VoiceData(BaseModel):
     user_id:      str
     audio_base64: str
     language:     str = "en"
+
+class VisionQuery(BaseModel):
+    user_id:   str
+    image_b64: str
+    query:     str = "What is in this image?"
+
+class APIKeyUpdate(BaseModel):
+    api_key: str
 
 class TaskRequest(BaseModel):
     """Direct agent task execution"""
@@ -118,10 +127,15 @@ async def chat_endpoint(message: ChatMessage):
             response=response,
             message_type=message.message_type,
         )
+        
+        audio_response = None
+        if message.require_audio:
+            audio_response = await audio.synthesize(response)
 
         return {
             "status":    "success",
             "response":  response,
+            "audio_response": audio_response,
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -249,6 +263,44 @@ async def system_status():
         "system_info": sys_info,
         "timestamp": datetime.now().isoformat(),
     }
+
+@app.post("/config/api_key", tags=["system"])
+async def update_api_key(data: APIKeyUpdate):
+    """Updates the Gemini API key in .env and reinitializes the brain."""
+    try:
+        import os
+        env_path = os.path.join(os.path.dirname(__file__), ".env")
+        
+        # Read existing lines
+        lines = []
+        if os.path.exists(env_path):
+            with open(env_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+                
+        # Update or append
+        found = False
+        for i, line in enumerate(lines):
+            if line.startswith("GEMINI_API_KEY="):
+                lines[i] = f'GEMINI_API_KEY="{data.api_key}"\n'
+                found = True
+                break
+        if not found:
+            lines.append(f'GEMINI_API_KEY="{data.api_key}"\n')
+            
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+            
+        # Update in-memory config
+        import core.config as config
+        config.GEMINI_API_KEY = data.api_key
+        os.environ["GEMINI_API_KEY"] = data.api_key
+        
+        # Re-initialize Brain
+        await brain.initialize()
+        
+        return {"status": "success", "message": "API key updated and brain re-initialized."}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
 
 # ─── WebSocket ───────────────────────────────────────────────────────────────
 

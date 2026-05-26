@@ -147,25 +147,33 @@ ws.send(JSON.stringify({
 }));
 ```
 
+## ⚙️ Core Modules
+
+- **`Brain`**: Routes queries to appropriate agents based on task context.
+- **`SystemAgent`**: Handles file operations, system info, brightness, and volume control.
+- **`BrowserAgent`**: Manages headless and visible browser automation using Playwright.
+- **`MessagingAgent`**: Executes advanced WhatsApp Web and App automations (including background scheduling and auto-reply listeners).
+- **`VoiceAgent` / `Audio`**: Handles speech-to-text (STT) and text-to-speech (TTS) via Web Speech API and Microsoft Edge Neural voices.
+- **`VisionAgent`**: Basic image processing and desktop analysis.
+
 ---
 
 ## 📋 Feature List
 
 ### Tier 1 - MVP (Complete)
-- ✅ Text chat interface
-- ✅ Browser search & navigation
-- ✅ File finding & organization
-- ✅ User memory & learning
-- ✅ Message history
-- ✅ System status monitoring
+- 🚀 Text chat interface
+- 🚀 Browser search & navigation
+- 🚀 File finding & organization
+- 🚀 User memory & learning
+- 🚀 Message history
+- 🚀 System status monitoring
+- 🚀 Voice input/output (SpeechRecognition & Edge TTS)
+- 🚀 WhatsApp messaging (App & Browser modes, Scheduling, Auto-Reply)
 
 ### Tier 2 - Advanced (In Progress)
-- 🔄 Voice input/output
-- 🔄 WhatsApp messaging
-- 🔄 Mood detection
-- 🔄 Schedule tasks
-- 🔄 Screenshot analysis
-- 🔄 Email handling
+- 🛠️ Mood detection
+- 🛠️ Screenshot analysis
+- 🛠️ Email handling
 
 ### Tier 3 - Polish (Planned)
 - ⏳ Multi-language support
@@ -379,9 +387,15 @@ Contributions welcome! Please:
 
 See [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) for more solutions.
 
+![Browser Automation UI (MEGAN Chat)](screenshots/browser_chat.png)
+
+![Browser Automation UI (YouTube Playing)](screenshots/youtube_playback.png)
+
+![File Organization UI](screenshots/file_setup.png)
+
 ---
 
-## 🗺️ Roadmap
+## 🌟 Future Roadmap
 
 ### Q2 2024 (Current)
 - [x] Core brain implementation
