@@ -362,15 +362,6 @@ Contributions welcome! Please:
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Areas Needing Help
-- [ ] Voice input/output implementation
-- [ ] WhatsApp agent development
-- [ ] Frontend UI improvements
-- [ ] Mobile app (React Native)
-- [ ] Testing & QA
-- [ ] Documentation
-
----
 
 ## 🐛 Known Issues
 
@@ -385,36 +376,6 @@ Contributions welcome! Please:
 
 4. **Concurrent Tasks:** Multiple agents might cause conflicts
    - **Fix:** Implement proper locking (planned)
-
----
-
-## 🌟 Future Roadmap
-
-### Q2 2024 (Current)
-- [x] Core brain implementation
-- [x] File agent
-- [x] Browser agent
-- [x] Memory system
-- [ ] Voice module
-
-### Q3 2024
-- [ ] Messaging agent (WhatsApp)
-- [ ] Vision module
-- [ ] Mobile app
-- [ ] Email integration
-
-### Q4 2024
-- [ ] Multi-language support
-- [ ] Custom voice model
-- [ ] Advanced analytics
-- [ ] Cloud sync
-
-### 2025+
-- [ ] Smart home integration
-- [ ] Calendar integration
-- [ ] Document summarization
-- [ ] Code execution
-- [ ] Custom plugins
 
 ---
 
@@ -449,14 +410,6 @@ Built with:
 
 ---
 
-## 📞 Contact
-
-- **Author:** Your Name
-- **Email:** your.email@example.com
-- **GitHub:** [@yourusername](https://github.com/yourusername)
-- **Twitter:** [@yourhandle](https://twitter.com/yourhandle)
-
----
 
 ## 🌟 Star History
 
@@ -476,7 +429,7 @@ If you find this project useful, please star it! ⭐
 
 **Last Updated:** May 25, 2026  
 **Current Version:** 1.0  
-**Maintained By:** [Your Team]
+
 
 ## dY"  Screenshots
 
